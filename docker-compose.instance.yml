@@ -1,0 +1,19 @@
+# Optional single-instance deployment file.
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.instance.yml up -d --build
+#
+# This adds Caddy as a reverse proxy so the app is reachable from http://SERVER_IP.
+# For local testing, docker-compose.yml alone is enough.
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: ai-research-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./infra/Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - web
+      - api
