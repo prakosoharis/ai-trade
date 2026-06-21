@@ -6,6 +6,13 @@ export const metadata = {
   description: "Pre-MVP institutional market research workbench"
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#070a0f"
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">

@@ -35,10 +35,12 @@ docker compose up -d --build
 Open:
 
 ```text
-Web App:      http://localhost:3000
-API:          http://localhost:8000
-API Docs:     http://localhost:8000/docs
+Web App:      http://localhost:3060
+API:          http://localhost:8085
+API Docs:     http://localhost:8085/docs
 Adminer:      http://localhost:8080
+Postgres:     localhost:5438
+Redis:        localhost:6388
 ```
 
 Adminer login:
@@ -55,7 +57,7 @@ Database: airesearch
 
 ## 3. Main User Flow
 
-1. Open `http://localhost:3000`
+1. Open `http://localhost:3060`
 2. Select asset class, asset, and timeframe
 3. Add optional market context
 4. Click **Run Institutional Analysis**
@@ -67,14 +69,16 @@ Database: airesearch
 
 ## 4. Services
 
-| Service | Purpose |
-|---|---|
-| web | Next.js frontend |
-| api | FastAPI backend |
-| worker | Research pipeline worker |
-| postgres | Main database |
-| redis | Job queue and progress cache |
-| adminer | Database viewer |
+| Service | Purpose | Host Port | Container Port |
+|---|---|---|---|
+| web | Next.js frontend | 3060 | 3000 |
+| api | FastAPI backend | 8085 | 8000 |
+| worker | Research pipeline worker | — (internal) | — |
+| postgres | Main database | 5438 | 5432 |
+| redis | Job queue and progress cache | 6388 | 6379 |
+| adminer | Database viewer | 8080 | 8080 |
+
+> Ports can be overridden in `.env` via `WEB_PORT`, `API_PORT`, `ADMINER_PORT`, `POSTGRES_HOST_PORT`, and `REDIS_HOST_PORT`. The container-internal ports (`POSTGRES_PORT`, `REDIS_PORT`) must stay at `5432` / `6379` because apps connect via the Docker network.
 
 ---
 
@@ -151,7 +155,7 @@ nano .env
 Set:
 
 ```text
-NEXT_PUBLIC_API_BASE_URL=http://SERVER_IP:8000
+NEXT_PUBLIC_API_BASE_URL=http://SERVER_IP:8085
 ```
 
 Run:
@@ -163,8 +167,8 @@ docker compose up -d --build
 Open:
 
 ```text
-http://SERVER_IP:3000
-http://SERVER_IP:8000/docs
+http://SERVER_IP:3060
+http://SERVER_IP:8085/docs
 ```
 
 Optional reverse proxy via Caddy:
